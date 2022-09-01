@@ -1,8 +1,12 @@
 from algebra import *
 import Steenrod
+import partitions
 import copy
 
 class Brown_Gitler_polynomial_algebra:
+
+	def __init__(self):
+		self.A = Steenrod.Steenrod_algebra(2)
 
 	# The first entry represents the coefficient, and subsequent entries represent powers of the variables.
 	# Example: 1 + x0 x1 ^ 2 + x5  would be input as [[1], [1, 1, 2]], [1, 0, 0, 0, 0, 0, 5]]
@@ -39,6 +43,15 @@ class Brown_Gitler_polynomial_algebra:
 		return "0" if len(terms) == 0 else " + ".join(terms)
 
 
+	basis_elements = []
+	def basis(self, n, m=-1):
+		B = Brown_Gitler_polynomial_algebra.basis_elements
+		if len(B) < n + 1: B += [False for i in range(n + 1 - len(B))]
+		if B[n] == False:
+			B[n] = [self.element([[1] + v]) for v in partitions.partitionsByPowersOf2(n, True)]
+		return B[n] if m == -1 else [b for b in B[n] if sum(b.data[0][1:]) == m]
+
+
 	# Sq^a x_i^b = (b choose a) x_i^(b-a) x_(i-1)^(2a), where (b choose a) = 0 if a > b
 	def left_action(self, a, x):
 		ans = self.element([])
@@ -55,7 +68,7 @@ class Brown_Gitler_polynomial_algebra:
 						if i > sum(term[1:]): continue # instability condition
 
 						xs = [j for j in range(1, len(term)) if term[j] != 0]
-						for part in self.partitions(i, len(xs)):
+						for part in self.parts(i, len(xs)):
 							if all([Steenrod.combMod2(term[xs[j]], part[j]) == 1 for j in range(len(xs))]) and not (xs[0] == 1 and part[0] > 0):
 								newterm = [1] + [0 for j in range(len(term))]
 								for j in range(len(xs)):
@@ -70,12 +83,25 @@ class Brown_Gitler_polynomial_algebra:
 
 	# used in left_action
 	# returns ordered partitions of n into k summands
-	def partitions(self, n, k):
+	def parts(self, n, k):
 		if k == 1: return [[n]]
 		parts = []
 		for i in range(n+1):
-			parts += [[i] + part for part in self.partitions(n - i, k - 1)]
+			parts += [[i] + part for part in self.parts(n - i, k - 1)]
 		return parts
+
+
+	def printActions(self, n):
+		printed = False
+		for m in range(min([i for i in range(n + 1) if len(self.basis(i)) > 0]), n + 1):
+			if printed and m < n - 1: print()
+			for b in self.basis(n, m):
+				i = 1
+				while i <= m and i + m <= n:
+					a = self.A.adem([[i]])
+					print("{} * ({}) = {}".format(a, b, a * b))
+					printed = True
+					i *= 2
 
 
 class Brown_Gitler_module:
@@ -198,16 +224,16 @@ class Free_unstable_module:
 
 
 	def basis(self, m):
-		return sorted([[m] + partition for partition in self.partitions(n - m, n // 2)])
+		return sorted([[m] + partition for partition in self.parts(n - m, n // 2)])
 
 
-	def partitions(self, total, maxFirst):
+	def parts(self, total, maxFirst):
 		if 2 * maxFirst < total: return []
 	
 		ans = []
 		for i in range((total + 1) // 2 - 1, min(maxFirst + 1, total + 1)):
 			if i == total: ans.append([i])
-			else: ans += [[i] + part for part in self.partitions(total - i, i // 2)]
+			else: ans += [[i] + part for part in self.parts(total - i, i // 2)]
 		return ans
 
 
@@ -217,24 +243,8 @@ class Free_unstable_module:
 A = Steenrod.Steenrod_algebra(2)
 T = Brown_Gitler_polynomial_algebra()
 
-# for i in range(1, 6):
-#	for j in range(6):
-#		a = A.adem([[j]])
-#		x = T.element([[1, 0, i]])
-#		print("({}) * ({}) = {}".format(a, x, a * x))
-		
-
-x = T.element([[1, 0, 0, 0, 0, 6], [1], [1, 1, 1, 1], [1, 0, 2, 4, 5]])
-a = A.adem([[2], [3, 1]])
-print("({}) * ({}) = {}".format(a, x, a * x))
-
-
-
-m, n = 4, 4
-J = [Brown_Gitler_module(n) for n in range(9)]
-
-for i in range(1, 5):
-	for j in range(1, 5):
-		a = J[m].element([[i, [1]]])
-		b = J[n].element([[j, [1]]])
-		print("({}) × ({}) = {}".format(a, b, J[m+n].mu(a, b)))
+for n in range(9):
+	if n > 0: print()
+	print("n = {}".format(n))
+	print()
+	T.printActions(n)
