@@ -1,8 +1,8 @@
 class partitionsByPowersOf2:
 
 	def __init__(self, n, outputCoefficientVector=False):
-		if not isinstance(n, int) or n < 1:
-			raise ValueError("Input must be a positive integer.")
+		if not isinstance(n, int) or n < 0:
+			raise ValueError("Input must be a non-negative integer.")
 		self.n = n
 		self.p = []
 		self.oCV = outputCoefficientVector
