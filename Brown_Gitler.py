@@ -224,7 +224,7 @@ class Free_unstable_module:
 
 
 	def basis(self, m):
-		return sorted([[m] + partition for partition in self.parts(n - m, n // 2)])
+		return sorted([[m] + partition for partition in self.parts(self.n - m, self.n // 2)])
 
 
 	def parts(self, total, maxFirst):
@@ -235,16 +235,3 @@ class Free_unstable_module:
 			if i == total: ans.append([i])
 			else: ans += [[i] + part for part in self.parts(total - i, i // 2)]
 		return ans
-
-
-#################
-
-
-A = Steenrod.Steenrod_algebra(2)
-T = Brown_Gitler_polynomial_algebra()
-
-for n in range(9):
-	if n > 0: print()
-	print("n = {}".format(n))
-	print()
-	T.printActions(n)
