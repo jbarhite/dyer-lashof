@@ -115,9 +115,20 @@ class Brown_Gitler_polynomial_algebra:
 
 class Brown_Gitler_module:
 
-	free_modules = []
+	free_modules = [] # Won't need this if we make Free_unstable_module a singleton class
+	instances = []
 
-	def __init__(self, n):
+	def __new__(cls, *args):
+		if len(cls.instances) < args[0] + 1:
+			cls.instances += [None for i in range(args[0] + 1 - len(cls.instances))]
+		if cls.instances[args[0]] == None:
+			cls.instances[args[0]] = object.__new__(cls)
+			cls.instances[args[0]].init(args[0])
+		return cls.instances[args[0]]
+
+
+	# Gets called directly by __new__
+	def init(self, n):
 		self.n = n
 		fm = Brown_Gitler_module.free_modules
 		if len(Brown_Gitler_module.free_modules) < n + 1:
@@ -244,7 +255,19 @@ class Brown_Gitler_module:
 
 class Free_unstable_module:
 
-	def __init__(self, n):
+	instances = []
+
+	def __new__(cls, *args):
+		if len(cls.instances) < args[0] + 1:
+			cls.instances += [None for i in range(args[0] + 1 - len(cls.instances))]
+		if cls.instances[args[0]] == None:
+			cls.instances[args[0]] = object.__new__(cls)
+			cls.instances[args[0]].init(args[0])
+		return cls.instances[args[0]]
+
+
+	# Gets called directly by __new__
+	def init(self, n):
 		self.n = n
 
 
