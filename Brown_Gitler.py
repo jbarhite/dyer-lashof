@@ -81,6 +81,15 @@ class Brown_Gitler_polynomial_algebra:
 		return ans
 
 
+	def elementFromJ(self, x):
+		print(x, x.data, type(x.parent))
+		J = x.parent
+		v = [0 for i in range(sum([len(b) for b in J.basis]))]
+		for term in x.data:
+			w = [0 for i in range(sum([len(J.basis[m]) for m in range(term[0])]))] + term[1] + [0 for i in range(sum([len(J.basis[m]) for m in range(term[0] + 1, len(v) + 1)]))]
+			print(term, w)
+
+
 	# used in left_action
 	# returns ordered partitions of n into k summands
 	def parts(self, n, k):
@@ -192,6 +201,22 @@ class Brown_Gitler_module:
 		return ans
 
 
+	def elementFromT(self, x):
+		if not all([self.n == sum([2**(i-1)*term[i] for i in range(1, len(term))]) for term in x.data]):
+			raise ValueError("{} is not an element of J({})".format(x, self.n))
+
+		ans = self.element([])
+		for term in x.data:
+			ans1 = Brown_Gitler_module(0).element([[0, [1]]])
+			m = 0
+			for i in range(1, len(term)):
+				for j in range(term[i]):
+					ans1 = Brown_Gitler_module(m + 2**(i-1)).mu(ans1, Brown_Gitler_module(2**(i-1)).element([[1, [1]]]))
+					m += 2**(i-1)
+			ans = ans + ans1
+		return ans
+
+
 	def printFreeModuleBasisElement(self, s):
 		return "Σ^{} ".format(s[0]) + " ".join(["Sq^{}".format(i) for i in s[1:]])
 
@@ -235,3 +260,16 @@ class Free_unstable_module:
 			if i == total: ans.append([i])
 			else: ans += [[i] + part for part in self.parts(total - i, i // 2)]
 		return ans
+
+
+
+########################
+
+
+J = [Brown_Gitler_module(n) for n in range(9)]
+T = Brown_Gitler_polynomial_algebra()
+x = J[6].element([[2, [1]], [3, [0, 1]]])
+# print(T.elementFromJ(x))
+
+y = T.element([[1, 0, 2, 1], [1, 8]])
+print("{} corresponds to {}".format(y, J[8].elementFromT(y)))
