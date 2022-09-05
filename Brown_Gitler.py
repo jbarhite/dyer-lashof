@@ -1,4 +1,5 @@
 from algebra import *
+from matrix import *
 import Steenrod
 import partitions
 import copy
@@ -81,13 +82,25 @@ class Brown_Gitler_polynomial_algebra:
 		return ans
 
 
+	conversion_matrices = []
+
 	def elementFromJ(self, x):
-		print(x, x.data, type(x.parent))
 		J = x.parent
-		v = [0 for i in range(sum([len(b) for b in J.basis]))]
+		d = sum([len(b) for b in J.basis])
+		v = Matrix([[0 for i in range(d)]], mod=2)
 		for term in x.data:
-			w = [0 for i in range(sum([len(J.basis[m]) for m in range(term[0])]))] + term[1] + [0 for i in range(sum([len(J.basis[m]) for m in range(term[0] + 1, len(v) + 1)]))]
-			print(term, w)
+			w = Matrix([[0 for i in range(sum([len(J.basis[m]) for m in range(term[0])]))] + term[1] + [0 for i in range(sum([len(J.basis[m]) for m in range(term[0] + 1, d + 1)]))]], mod=2)
+			v += w
+
+		cm = type(self).conversion_matrices
+		if len(cm) < J.n + 1:
+			cm += [None for i in range(J.n + 1 - len(cm))]
+		if cm[J.n] == None:
+			# Produce conversion matrix
+			cm[J.n] = Matrix([[0 for c in range(d)] for r in range(d)], mod=2)
+
+		w = cm[J.n] * v.transpose()
+		return sum([self.basis(J.n)[i] for i in range(d) if w.v[i] == 1], self.element([]))
 
 
 	# used in leftAction
@@ -289,10 +302,11 @@ class Free_unstable_module:
 ########################
 
 
-# J = [Brown_Gitler_module(n) for n in range(9)]
-# T = Brown_Gitler_polynomial_algebra()
-# x = J[6].element([[2, [1]], [3, [0, 1]]])
-# print(T.elementFromJ(x))
+J = [Brown_Gitler_module(n) for n in range(9)]
+T = Brown_Gitler_polynomial_algebra()
+
+x = J[6].element([[2, [1]], [3, [0, 1]]])
+print("{} corresponds to {}".format(x, T.elementFromJ(x)))
 
 # y = T.element([[1, 0, 2, 1], [1, 8]])
 # print("{} corresponds to {}".format(y, J[8].elementFromT(y)))
