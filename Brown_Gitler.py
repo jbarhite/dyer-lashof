@@ -289,10 +289,10 @@ class Free_unstable_module:
 ########################
 
 
-J = [Brown_Gitler_module(n) for n in range(9)]
-T = Brown_Gitler_polynomial_algebra()
-x = J[6].element([[2, [1]], [3, [0, 1]]])
+# J = [Brown_Gitler_module(n) for n in range(9)]
+# T = Brown_Gitler_polynomial_algebra()
+# x = J[6].element([[2, [1]], [3, [0, 1]]])
 # print(T.elementFromJ(x))
 
-y = T.element([[1, 0, 2, 1], [1, 8]])
-print("{} corresponds to {}".format(y, J[8].elementFromT(y)))
+# y = T.element([[1, 0, 2, 1], [1, 8]])
+# print("{} corresponds to {}".format(y, J[8].elementFromT(y)))
