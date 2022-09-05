@@ -31,6 +31,10 @@ class Matrix:
 		return Matrix([[A[r][n + c] for c in range(n)] for r in range(n)], mod=2)
 
 
+	def transpose(self):
+		return Matrix([[self.v[c][r] for c in range(self.m)] for r in range(self.n)], self.mod)
+
+
 	def det(self):
 		if self.m != self.n:
 			raise ValueError("Cannot take the determinant of a non-square matrix.")
