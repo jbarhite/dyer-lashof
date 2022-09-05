@@ -53,7 +53,7 @@ class Brown_Gitler_polynomial_algebra:
 
 
 	# Sq^a x_i^b = (b choose a) x_i^(b-a) x_(i-1)^(2a), where (b choose a) = 0 if a > b
-	def left_action(self, a, x):
+	def leftAction(self, a, x):
 		ans = self.element([])
 		for a1 in a.data:
 			if a1 == [0]:
@@ -90,7 +90,7 @@ class Brown_Gitler_polynomial_algebra:
 			print(term, w)
 
 
-	# used in left_action
+	# used in leftAction
 	# returns ordered partitions of n into k summands
 	def parts(self, n, k):
 		if k == 1: return [[n]]
@@ -172,7 +172,7 @@ class Brown_Gitler_module:
 		return s if len(s) > 0 else "0"
 
 
-	def left_action(self, a, x):
+	def leftAction(self, a, x):
 		ans = self.element([])
 		for a1 in a.data:
 			for x1 in x.data:

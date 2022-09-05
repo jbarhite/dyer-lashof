@@ -17,7 +17,7 @@ class Module_element(Element):
 
 	def __rmul__(self, other):
 		if type(other) == Algebra_element:
-			return self.parent.left_action(other, self)
+			return self.parent.leftAction(other, self)
 
 
 class Vector_space_element(Module_element):
