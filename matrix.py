@@ -50,7 +50,7 @@ class Matrix:
 		if self.mod != other.mod:
 			raise ValueError("Cannot add matrices with entries in different rings.")
 
-		ans = Matrix([[self.v[r][c] + other.v[r][c] for c in range(self.n)] for r in range(self.m)])
+		ans = Matrix([[self.v[r][c] + other.v[r][c] for c in range(self.n)] for r in range(self.m)], mod=self.mod)
 		if self.mod != False:
 			for i in range(ans.m):
 				for j in range(ans.n):
@@ -64,7 +64,7 @@ class Matrix:
 		if self.mod != other.mod:
 			raise ValueError("Cannot add matrices with entries in different rings.")
 
-		ans = Matrix([[sum([self.v[r][i] * other.v[i][c] for i in range(self.n)]) for c in range(other.n)] for r in range(self.m)])
+		ans = Matrix([[sum([self.v[r][i] * other.v[i][c] for i in range(self.n)]) for c in range(other.n)] for r in range(self.m)], mod=self.mod)
 		if self.mod != False:
 			for i in range(ans.m):
 				for j in range(ans.n):
