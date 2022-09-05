@@ -15,7 +15,7 @@ print()
 
 ### Brown-Gitler modules
 
-J = [BG.Brown_Gitler_module(n) for n in range(9)]
+J = [BG.Brown_Gitler_module(n) for n in range(13)]
 
 n = 6
 print("Bases for J_{}:".format(n)); J[n].printBases(); print()
@@ -28,6 +28,7 @@ y = J[6].element([ [2,[1]], [6,[1]] ])
 print("Examples with Brown-Gitler modules:")
 print("({}) + ({}) = {}".format(x, y, x + y))
 print("({}) * ({}) = {}".format(a, x, a * x))
+print("({}) * ({}) = {}".format(x, y, J[12].mu(x, y)))
 print()
 
 
@@ -41,6 +42,14 @@ print("({}) * ({}) = {}".format(x, y, x * y))
 print("({}) * ({}) = {}".format(a, x, a * x))
 print()
 
+
 n = 6
 print("Basis for J_{} as a submodule of T: {}".format(n, ", ".join([str(x) for x in T.basis(n)])))
 print("Actions of Steenrod squares on basis elements of J_{}:".format(n)); T.printActions(n); print()
+
+
+print("Converting between J(*) and F_2[x_0, x_1, x_2, ...]:")
+x = T.element([[1, 0, 1, 1], [1, 6]])
+print("{} corresponds to {}".format(x, J[6].elementFromT(x)))
+
+# Conversion in the other direction is not supported yet.
