@@ -100,7 +100,7 @@ class Brown_Gitler_polynomial_algebra:
 			cm[J.n] = Matrix([[0 for c in range(d)] for r in range(d)], mod=2)
 
 		w = cm[J.n] * v.transpose()
-		return sum([self.basis(J.n)[i] for i in range(d) if w.v[i] == 1], self.element([]))
+		return sum([self.basis(J.n)[i] for i in range(d) if w.ent[i] == 1], self.element([]))
 
 
 	# used in leftAction
