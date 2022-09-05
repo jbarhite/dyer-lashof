@@ -86,21 +86,15 @@ class Brown_Gitler_polynomial_algebra:
 
 	def elementFromJ(self, x):
 		J = x.parent
-		d = sum([len(b) for b in J.basis])
-		v = Matrix([[0 for i in range(d)]], mod=2)
-		for term in x.data:
-			w = Matrix([[0 for i in range(sum([len(J.basis[m]) for m in range(term[0])]))] + term[1] + [0 for i in range(sum([len(J.basis[m]) for m in range(term[0] + 1, d + 1)]))]], mod=2)
-			v += w
 
 		cm = type(self).conversion_matrices
 		if len(cm) < J.n + 1:
 			cm += [None for i in range(J.n + 1 - len(cm))]
 		if cm[J.n] == None:
-			# Produce conversion matrix
-			cm[J.n] = Matrix([[0 for c in range(d)] for r in range(d)], mod=2)
+			cm[J.n] = Matrix([J.eltVector(J.elementFromT(b)).ent[0] for b in self.basis(J.n)], mod=2).transpose().inv_mod2()
 
-		w = cm[J.n] * v.transpose()
-		return sum([self.basis(J.n)[i] for i in range(d) if w.ent[i] == 1], self.element([]))
+		w = cm[J.n] * J.eltVector(x).transpose()
+		return sum([self.basis(J.n)[i] for i in range(J.d) if w.ent[i][0] == 1], self.element([]))
 
 
 	# used in leftAction
@@ -147,6 +141,7 @@ class Brown_Gitler_module:
 		if len(Brown_Gitler_module.free_modules) < n + 1:
 			fm += [Free_unstable_module(i) for i in range(len(fm), n+1)]
 		self.basis = [fm[n].basis(m) for m in range(0, n + 1)]
+		self.d = sum([len(b) for b in self.basis])
 		self.A = Steenrod.Steenrod_algebra(2)
 
 
@@ -172,6 +167,18 @@ class Brown_Gitler_module:
 				data.pop(i)
 
 		return Vector_space_element(self, data)
+
+
+	def eltVector(self, x):
+		if x.parent.n != self.n:
+			raise ValueError("{} is not an element of J({})".format(x, self.n))
+
+		v = Matrix([[0 for i in range(self.d)]], mod=2)
+		for term in x.data:
+			w = Matrix([[0 for i in range(sum([len(self.basis[m]) for m in range(term[0])]))] + term[1] + [0 for i in range(sum([len(self.basis[m]) for m in range(term[0] + 1, self.n + 1)]))]], mod=2)
+			v += w
+		return v
+
 
 
 	def add(self, a, b):
@@ -296,17 +303,3 @@ class Free_unstable_module:
 			if i == total: ans.append([i])
 			else: ans += [[i] + part for part in self.parts(total - i, i // 2)]
 		return ans
-
-
-
-########################
-
-
-J = [Brown_Gitler_module(n) for n in range(9)]
-T = Brown_Gitler_polynomial_algebra()
-
-x = J[6].element([[2, [1]], [3, [0, 1]]])
-print("{} corresponds to {}".format(x, T.elementFromJ(x)))
-
-# y = T.element([[1, 0, 2, 1], [1, 8]])
-# print("{} corresponds to {}".format(y, J[8].elementFromT(y)))

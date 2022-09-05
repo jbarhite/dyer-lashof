@@ -48,8 +48,18 @@ print("Basis for J_{} as a submodule of T: {}".format(n, ", ".join([str(x) for x
 print("Actions of Steenrod squares on basis elements of J_{}:".format(n)); T.printActions(n); print()
 
 
-print("Converting between J(*) and F_2[x_0, x_1, x_2, ...]:")
-x = T.element([[1, 0, 1, 1], [1, 6]])
-print("{} corresponds to {}".format(x, J[6].elementFromT(x)))
+print("Converting from F_2[x_0, x_1, x_2, ...] to J(*):")
+n = 6
+J = [BG.Brown_Gitler_module(i) for i in range(n + 1)]
+for b in T.basis(n):
+	print("{} corresponds to {}".format(b, J[n].elementFromT(b)))
+print()
 
-# Conversion in the other direction is not supported yet.
+
+print("Converting from J(*) to F_2[x_0, x_1, x_2, ...]:")
+n = 6
+J = BG.Brown_Gitler_module(n)
+for m in range(n+1):
+	for i in range(len(J.basis[m])):
+		x = J.element([[m, [1 if j == i else 0 for j in range(len(J.basis[m]))]]])
+		print("{} corresponds to {}".format(x, T.elementFromJ(x)))
