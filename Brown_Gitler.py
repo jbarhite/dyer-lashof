@@ -131,7 +131,6 @@ class Brown_Gitler_polynomial_algebra:
 
 class Brown_Gitler_module:
 
-	free_modules = [] # Won't need this if we make Free_unstable_module a singleton class
 	instances = []
 
 	def __new__(cls, *args):
@@ -146,10 +145,7 @@ class Brown_Gitler_module:
 	# Called directly by __new__
 	def init(self, n):
 		self.n = n
-		fm = Brown_Gitler_module.free_modules
-		if len(Brown_Gitler_module.free_modules) < n + 1:
-			fm += [Free_unstable_module(i) for i in range(len(fm), n+1)]
-		self.basis = [fm[n].basis(m) for m in range(0, n + 1)]
+		self.basis = [Free_unstable_module(n).basis(m) for m in range(0, n + 1)]
 		self.d = sum([len(b) for b in self.basis])
 		self.A = Steenrod.Steenrod_algebra(2)
 
