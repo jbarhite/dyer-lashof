@@ -6,7 +6,16 @@ import copy
 
 class Brown_Gitler_polynomial_algebra:
 
-	def __init__(self):
+	instance = None
+
+	def __new__(cls):
+		if cls.instance == None:
+			cls.instance = object.__new__(cls)
+			cls.instance.init()
+		return cls.instance
+
+	# Called directly by __new__
+	def init(self):
 		self.A = Steenrod.Steenrod_algebra(2)
 
 	# The first entry represents the coefficient, and subsequent entries represent powers of the variables.
@@ -134,7 +143,7 @@ class Brown_Gitler_module:
 		return cls.instances[args[0]]
 
 
-	# Gets called directly by __new__
+	# Called directly by __new__
 	def init(self, n):
 		self.n = n
 		fm = Brown_Gitler_module.free_modules
@@ -286,7 +295,7 @@ class Free_unstable_module:
 		return cls.instances[args[0]]
 
 
-	# Gets called directly by __new__
+	# Called directly by __new__
 	def init(self, n):
 		self.n = n
 
