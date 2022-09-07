@@ -58,13 +58,30 @@ class Steenrod_algebra: # at the prime 2
 		return " + ".join([ " ".join(["Sq^{}".format(i) for i in mon]) for mon in elt.data ])
 
 
+class Graded_A_module(Graded_F2_module):
+
+	# Computes Sq^i b, where b is the jth basis element in degree m
+	def leftActionOnBasis(self, i, m, j):
+		raise NotImplementedError("Method 'leftActionOnBasis' must be implemented in subclasses of Graded_A_module")
+
+	def leftAction(self, a, x):
+		ans = self.element([])
+		for a1 in a.data:
+			ans1 = copy.deepcopy(x.data)
+			for i in a1[::-1]:
+				ans2 = self.element([])
+				for term in ans1:
+					for j in range(len(self.basis(term[0]))):
+						if term[1][j] == 1:
+							ans2 += self.leftActionOnBasis(i, term[0], j)
+				ans1 = ans2.data
+			ans += self.element(ans1)
+		return ans
+
+
 # efficiently computes nCk for non-negative integers n, k
 def combMod2(n, k):
 	if k > n: return 0
 	n, k = "{0:b}".format(n), "{0:b}".format(k)
 	k = "0" * (len(n) - len(k)) + k
 	return 1 if all([n[i] == "1" or k[i] == "0" for i in range(len(n))]) else 0
-
-
-
-A = Steenrod_algebra(2)

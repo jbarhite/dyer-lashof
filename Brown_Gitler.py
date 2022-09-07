@@ -129,7 +129,7 @@ class Brown_Gitler_polynomial_algebra:
 					i *= 2
 
 
-class Brown_Gitler_module(GradedF2Module):
+class Brown_Gitler_module(Steenrod.Graded_A_module):
 
 	instances = []
 
@@ -155,6 +155,7 @@ class Brown_Gitler_module(GradedF2Module):
 
 
 	def constructBasis(self, m):
+		if m < 0 or m > self.n: return []
 		return Free_unstable_module(self.n).basis(m)
 
 
@@ -177,22 +178,16 @@ class Brown_Gitler_module(GradedF2Module):
 		return v
 
 
-	def leftAction(self, a, x):
+	def leftActionOnBasis(self, i, m, j):
 		ans = self.element([])
-		for a1 in a.data:
-			for x1 in x.data:
-				m, m2 = x1[0], x1[0] + sum(a1)
-				if m2 > self.n: continue
+		if m + i > self.n: return ans
 
-				c = [0 for i in range(len(self.basis(m2)))]
-				for i in range(len(self.basis(m2))):
-					for j in range(len(self.basis(m))):
-						if x1[1][j] == 0: continue
-						for term in (self.A.adem([self.basis(m2)[i][1:]]) * self.A.adem([a1])).data:
-							if term == self.basis(m)[j][1:]:
-								c[i] = (c[i] + 1) % 2
-				ans += self.element([[m2, c]])
-
+		c = [0 for i in range(len(self.basis(m + i)))]
+		for k in range(len(self.basis(m + i))):
+			for term in (self.A.adem([self.basis(m + i)[k][1:]]) * self.A.adem([[i]])).data:
+				if term == self.basis(m)[j][1:]:
+					c[k] = (c[k] + 1) % 2
+			ans += self.element([[m + i, c]])
 		return ans
 
 
@@ -284,3 +279,28 @@ class Free_unstable_module:
 			if i == total: ans.append([i])
 			else: ans += [[i] + part for part in self.parts(total - i, i // 2)]
 		return ans
+
+
+class Polynomial_Ring_A_Module(Graded_F2_module):
+
+	def constructBasis(self, m):
+		return [m]
+
+
+	def basisElementPrintableName(self, b):
+		if b == 0: return "1"
+		if b == 1: return "t"
+		return "t^{}".format(b)
+
+
+	def leftAction(self, a, x):
+		ans = self.element([])
+		for term in x.data:
+			print(term)
+
+
+# A = Steenrod.Steenrod_algebra(2)
+# F2t = Polynomial_Ring_A_Module()
+# x = F2t.element([[0, [1]], [1, [1]], [3, [1]], [7, [1]]])
+# a = A.adem([[1]])
+# print("({}) * ({}) = {}".format(a, x, a*x))
