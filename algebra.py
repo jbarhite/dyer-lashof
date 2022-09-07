@@ -36,7 +36,7 @@ class Algebra_element(Vector_space_element):
 
 
 
-class GradedF2Module:
+class Graded_F2_module:
 
 	def __init__(self, *args, **kwargs):
 		self.basis_elements = []
@@ -44,11 +44,11 @@ class GradedF2Module:
 
 	# Return a list of basis elements in degree m
 	def constructBasis(self, m):
-		raise NotImplementedError("Method 'constructBasis' must be implemented in subclasses of GradedF2Module")
+		raise NotImplementedError("Method 'constructBasis' must be implemented in subclasses of Graded_F2_module")
 
 
 	def basisElementPrintableName(self, b):
-		raise NotImplementedError("Method 'basisElementPrintableName' must be implemented in subclasses of GradedF2Module")
+		raise NotImplementedError("Method 'basisElementPrintableName' must be implemented in subclasses of Graded_F2_module")
 
 
 	def basis(self, m):
@@ -90,3 +90,20 @@ class GradedF2Module:
 			self.basisElementPrintableName(self.basis(term[0])[i]) for i in range(len(self.basis(term[0]))) if term[1][i] == 1
 		]) for term in elt.data])
 		return s if len(s) > 0 else "0"
+
+
+class Graded_F2_tensor_product(Graded_F2_module):
+
+	def __init__(self, A, B, minIndex=0):
+		self.A = A
+		self.B = B
+		self.minIndex = minIndex
+		super(type(self), self).__init__()
+
+
+	def constructBasis(self, m):
+		return sum([[(a, b) for a in self.A.basis(i) for b in self.B.basis(m - i)] for i in range(self.minIndex, m + 1 - self.minIndex)], [])
+
+
+	def basisElementPrintableName(self, b):
+		return "{} ⊗ {}".format(self.A.basisElementPrintableName(b[0]), self.B.basisElementPrintableName(b[1]))
