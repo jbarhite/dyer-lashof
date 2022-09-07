@@ -60,6 +60,6 @@ print("Converting from J(*) to F_2[x_0, x_1, x_2, ...]:")
 n = 6
 J = BG.Brown_Gitler_module(n)
 for m in range(n+1):
-	for i in range(len(J.basis[m])):
-		x = J.element([[m, [1 if j == i else 0 for j in range(len(J.basis[m]))]]])
+	for i in range(len(J.basis(m))):
+		x = J.element([[m, [1 if j == i else 0 for j in range(len(J.basis(m)))]]])
 		print("{} corresponds to {}".format(x, T.elementFromJ(x)))
