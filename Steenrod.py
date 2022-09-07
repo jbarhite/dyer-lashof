@@ -79,6 +79,28 @@ class Graded_A_module(Graded_F2_module):
 		return ans
 
 
+class Graded_A_tensor_product(Graded_F2_tensor_product, Graded_A_module):
+
+	def leftActionOnBasis(self, i, m, j):
+		x, y = self.basis(m)[j]
+
+		ans = self.element([])
+		for k in range(i + 1):
+			ans += self.tensor(self.M.leftActionOnBasis(k, x[0], x[1]), self.N.leftActionOnBasis(i - k, y[0], y[1]))
+		return ans
+
+
+	def tensor(self, x, y):
+		ans = self.element([])
+		for t1 in x.data:
+			for t2 in y.data:
+				for i in range(len(t1[1])):
+					for j in range(len(t2[1])):
+						if t1[1][i] == 1 and t2[1][i] == 1:
+							ans += self.basisElement(t1[0] + t2[0], self.basis(t1[0] + t2[0]).index(((t1[0], i), (t2[0], j))))
+		return ans
+
+
 # efficiently computes nCk for non-negative integers n, k
 def combMod2(n, k):
 	if k > n: return 0

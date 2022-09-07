@@ -281,7 +281,7 @@ class Free_unstable_module:
 		return ans
 
 
-class Polynomial_Ring_A_Module(Graded_F2_module):
+class Polynomial_Ring_A_Module(Steenrod.Graded_A_module):
 
 	def constructBasis(self, m):
 		return [m]
@@ -293,14 +293,5 @@ class Polynomial_Ring_A_Module(Graded_F2_module):
 		return "t^{}".format(b)
 
 
-	def leftAction(self, a, x):
-		ans = self.element([])
-		for term in x.data:
-			print(term)
-
-
-# A = Steenrod.Steenrod_algebra(2)
-# F2t = Polynomial_Ring_A_Module()
-# x = F2t.element([[0, [1]], [1, [1]], [3, [1]], [7, [1]]])
-# a = A.adem([[1]])
-# print("({}) * ({}) = {}".format(a, x, a*x))
+	def leftActionOnBasis(self, i, m, j):
+		return self.element([[m + i, [Steenrod.combMod2(m, i)]]])

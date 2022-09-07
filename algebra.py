@@ -81,6 +81,10 @@ class Graded_F2_module:
 		return Vector_space_element(self, data)
 
 
+	def basisElement(self, m, j):
+		return self.element([[m, [1 if i == j else 0 for i in range(len(self.basis(m)))]]])
+
+
 	def add(self, a, b):
 		return self.element(a.data + b.data)
 
@@ -94,16 +98,20 @@ class Graded_F2_module:
 
 class Graded_F2_tensor_product(Graded_F2_module):
 
-	def __init__(self, A, B, minIndex=0):
-		self.A = A
-		self.B = B
+	def __init__(self, M, N, minIndex=0):
+		self.M = M
+		self.N = N
 		self.minIndex = minIndex
-		super(type(self), self).__init__()
+		super().__init__()
 
 
 	def constructBasis(self, m):
-		return sum([[(a, b) for a in self.A.basis(i) for b in self.B.basis(m - i)] for i in range(self.minIndex, m + 1 - self.minIndex)], [])
+		return sum([[((k, i), (m - k, j)) for i in range(len(self.M.basis(k))) for j in range(len(self.N.basis(m - k)))] for k in range(self.minIndex, m + 1 - self.minIndex)], [])
+		# return sum([[(a, b) for a in self.M.basis(i) for b in self.N.basis(m - i)] for i in range(self.minIndex, m + 1 - self.minIndex)], [])
 
 
 	def basisElementPrintableName(self, b):
-		return "{} ⊗ {}".format(self.A.basisElementPrintableName(b[0]), self.B.basisElementPrintableName(b[1]))
+		return "{} ⊗ {}".format(
+			self.M.basisElementPrintableName(self.M.basis(b[0][0])[b[0][1]]),
+			self.N.basisElementPrintableName(self.N.basis(b[1][0])[b[1][1]])
+		)
