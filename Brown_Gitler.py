@@ -148,6 +148,7 @@ class Brown_Gitler_module(Steenrod.Graded_A_module):
 
 	# Called directly by __new__
 	def init(self, n):
+		super().__init__()
 		self.n = n
 		self.basis_elements = []
 		self.d = sum([len(self.basis(m)) for m in range(n + 1)]) # Also ensures the bases are constructed
