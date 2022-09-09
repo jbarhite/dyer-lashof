@@ -229,6 +229,12 @@ class Brown_Gitler_module(Steenrod.Graded_A_module):
 		return ans
 
 
+	# f is a map M^n ---> F_2, x is an element of M^k
+	# returns the image of x under the map M ---> J(n) corresponding to f
+	def mapIntoJ(self, f, x, k):
+		return self.element([[k, [f(self.A.adem([b[1:]]) * x) for b in self.basis(k)]]])
+
+
 	def printBases(self):
 		super().printBases(0, self.n)
 
