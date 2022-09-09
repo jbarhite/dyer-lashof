@@ -266,19 +266,3 @@ class Free_unstable_module:
 			if i == total: ans.append([i])
 			else: ans += [[i] + part for part in self.parts(total - i, i // 2)]
 		return ans
-
-
-class Polynomial_Ring_A_Module(Steenrod.Graded_A_module):
-
-	def constructBasis(self, m):
-		return [m]
-
-
-	def basisElementPrintableName(self, b):
-		if b == 0: return "1"
-		if b == 1: return "t"
-		return "t^{}".format(b)
-
-
-	def leftActionOnBasis(self, i, m, j):
-		return self.element([[m + i, [Steenrod.combMod2(m, i)]]])
