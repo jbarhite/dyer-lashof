@@ -233,16 +233,7 @@ class Brown_Gitler_module(Steenrod.Graded_A_module):
 
 		
 	def printActions(self):
-		n = self.n
-		for m in range(min([i for i in range(n + 1) if len(self.basis(i)) > 0]), n + 1):
-			for b in range(len(self.basis(m))):
-				i = 1
-				while i <= m and i + m <= n:
-					a = self.A.adem([[i]])
-					x = self.element([[m, [1 if j == b else 0 for j in range(len(self.basis(m)))]]])
-					print("{} * ({}) = {}".format(a, x, a * x))
-					i *= 2
-			if m < n - 1: print()
+		super().printActions((0, self.n), "unstable")
 
 
 class Free_unstable_module:

@@ -79,6 +79,22 @@ class Graded_A_module(Graded_F2_module):
 		return ans
 
 
+	def printActions(self, degreeRange, maxPower):
+		if not (maxPower == "unstable" or isinstance(maxPower, int)):
+			raise ValueError("maxPower must be an integer or 'unstable'.")
+
+		for m in range(degreeRange[0], degreeRange[1]):
+			if m > degreeRange[0] and len(self.basis(m - 1)) > 0: print()
+			for b in range(len(self.basis(m))):
+				i = 1
+				while i <= (m if maxPower == "unstable" else maxPower):
+					a = self.A.adem([[i]])
+					x = self.basisElement(m, b)
+					print("{} * ({}) = {}".format(a, x, a * x))
+					i *= 2
+
+
+
 class Graded_A_tensor_product(Graded_F2_tensor_product, Graded_A_module):
 
 	def leftActionOnBasis(self, i, m, j):
