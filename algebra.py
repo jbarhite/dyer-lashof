@@ -131,3 +131,14 @@ class Graded_F2_tensor_product(Graded_F2_module):
 			self.M.basisElementPrintableName(self.M.basis(b[0][0])[b[0][1]]),
 			self.N.basisElementPrintableName(self.N.basis(b[1][0])[b[1][1]])
 		)
+
+
+	def tensor(self, x, y):
+		ans = self.element([])
+		for t1 in x.data:
+			for t2 in y.data:
+				for i in range(len(t1[1])):
+					for j in range(len(t2[1])):
+						if t1[1][i] == 1 and t2[1][i] == 1:
+							ans += self.basisElement(t1[0] + t2[0], self.basis(t1[0] + t2[0]).index(((t1[0], i), (t2[0], j))))
+		return ans
