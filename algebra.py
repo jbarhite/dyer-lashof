@@ -40,6 +40,7 @@ class Graded_F2_module:
 
 	def __init__(self, *args, **kwargs):
 		self.basis_elements = []
+		self.basis_elements_neg = []
 
 
 	# Return a list of basis elements in degree m
@@ -52,11 +53,18 @@ class Graded_F2_module:
 
 
 	def basis(self, m):
-		if len(self.basis_elements) <= m:
-			self.basis_elements += [None for i in range(m + 1 - len(self.basis_elements))]
-		if self.basis_elements[m] == None:
-			self.basis_elements[m] = self.constructBasis(m)
-		return self.basis_elements[m]
+		if m >= 0:
+			if len(self.basis_elements) <= m:
+				self.basis_elements += [None for i in range(m + 1 - len(self.basis_elements))]
+			if self.basis_elements[m] == None:
+				self.basis_elements[m] = self.constructBasis(m)
+			return self.basis_elements[m]
+		else:
+			if len(self.basis_elements_neg) < -m:
+				self.basis_elements_neg += [None for i in range(-m - len(self.basis_elements_neg))]
+			if self.basis_elements_neg[-m - 1] == None:
+				self.basis_elements_neg[-m - 1] = self.constructBasis(m)
+			return self.basis_elements_neg[-m - 1]
 
 
 	def element(self, data):
