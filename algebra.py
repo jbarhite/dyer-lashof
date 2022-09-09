@@ -96,6 +96,14 @@ class Graded_F2_module:
 		return s if len(s) > 0 else "0"
 
 
+	def printBases(self, minIndex, maxIndex):
+		for m in range(minIndex, maxIndex + 1):
+			if len(self.basis(m)) == 0:
+				print("Degree {}: None".format(m))
+			else:
+				print("Degree {}: {}".format(m, ", ".join([str(self.basisElement(m, i)) for i in range(len(self.basis(m)))])))
+
+
 class Graded_F2_tensor_product(Graded_F2_module):
 
 	def __init__(self, M, N, minIndex=0):

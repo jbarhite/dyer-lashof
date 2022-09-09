@@ -229,13 +229,9 @@ class Brown_Gitler_module(Steenrod.Graded_A_module):
 
 
 	def printBases(self):
-		for m in range(0, self.n + 1):
-			if len(self.basis(m)) == 0:
-				print("J({})^{} = 0".format(self.n, m))
-			else:
-				print("J({})^{} = F_2[ {} ]*".format(self.n, m, " , ".join([self.printFreeModuleBasisElement(elt) for elt in self.basis(m)])))
+		super().printBases(0, self.n)
 
-
+		
 	def printActions(self):
 		n = self.n
 		for m in range(min([i for i in range(n + 1) if len(self.basis(i)) > 0]), n + 1):
