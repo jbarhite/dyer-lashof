@@ -4,6 +4,12 @@ import copy
 
 class Steenrod_algebra: # at the prime 2
 
+	instance = None
+	def __new__(cls, *args, **kwargs):
+		if cls.instance is None:
+			cls.instance = object.__new__(cls)
+		return cls.instance
+
 	def __init__(self, p):
 		self.p = 2
 
