@@ -157,7 +157,7 @@ class Brown_Gitler_module(Steenrod.Graded_A_module):
 
 	def constructBasis(self, m):
 		if m < 0 or m > self.n: return []
-		return Free_unstable_module(self.n).basis(m)
+		return Free_unstable_module(m).basis(self.n)
 
 
 	def basisElementPrintableName(self, b):
@@ -188,8 +188,7 @@ class Brown_Gitler_module(Steenrod.Graded_A_module):
 			for term in (self.A.adem([self.basis(m + i)[k][1:]]) * self.A.adem([[i]])).data:
 				if term == self.basis(m)[j][1:]:
 					c[k] = (c[k] + 1) % 2
-			ans += self.element([[m + i, c]])
-		return ans
+		return self.element([[m + i, c]])
 
 
 	def mu(self, x, y):
@@ -262,7 +261,8 @@ class Free_unstable_module:
 
 
 	def basis(self, m):
-		return sorted([[m] + partition for partition in self.parts(self.n - m, self.n // 2)])
+		if m < self.n: return []
+		return sorted([[self.n] + partition for partition in self.parts(m - self.n, m // 2)])
 
 
 	def parts(self, total, maxFirst):
