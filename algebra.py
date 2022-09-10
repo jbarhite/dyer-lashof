@@ -139,6 +139,6 @@ class Graded_F2_tensor_product(Graded_F2_module):
 			for t2 in y.data:
 				for i in range(len(t1[1])):
 					for j in range(len(t2[1])):
-						if t1[1][i] == 1 and t2[1][i] == 1:
+						if t1[1][i] == 1 and t2[1][j] == 1:
 							ans += self.basisElement(t1[0] + t2[0], self.basis(t1[0] + t2[0]).index(((t1[0], i), (t2[0], j))))
 		return ans
