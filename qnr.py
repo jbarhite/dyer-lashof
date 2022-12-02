@@ -36,12 +36,6 @@ class Polynomial_Ring_A_Module_t_Inverse(Steenrod.Graded_A_module):
 		return self.element([[m + i, [Steenrod.combMod2(m, i)]]])
 
 
-n, r = 2, 4
-J = [BG.Brown_Gitler_module(i) for i in range(max(n, n + r) + 1)]
-F2t = Polynomial_Ring_A_Module()
-M = Steenrod.Graded_A_tensor_product(J[n], F2t)
-T = BG.Brown_Gitler_polynomial_algebra()
-
 def sumOfBasisElements(J, M, n, r, z):
 	if len(z.data) == 0: return 0
 	ans = 0
@@ -51,14 +45,44 @@ def sumOfBasisElements(J, M, n, r, z):
 			ans += len(T.elementFromJ(J.basisElement(a[0], a[1])).data)
 	return ans % 2
 
-f = lambda z : sumOfBasisElements(J[n], M, n, r, z)
 
-for m in range(n + 1):
-	for b in range(len(T.basis(n, m))):
-		for t in range(n + r - m + 1):
-			x = M.tensor(J[n].elementFromT(T.basis(n, m)[b]), F2t.basisElement(t, 0))
-			print("{} ⊗ {} maps to {}".format(
-				T.basis(n, m)[b],
-				F2t.basisElement(t, 0),
-				T.elementFromJ(J[n + r].mapIntoJ(f, x, m + t))
-			))
+def alpha(n): return sum([int(i) for i in str(bin(n))[2:]])
+
+
+def Q1homologyBasis(n):
+	if n < 2: raise ValueError("Q1homologyBasis currently only accepts n >= 2")
+	if n % 2 == 0:
+		return [
+			T.element([[1] + [2 * int(i) for i in str(bin(n // 2))[2:][::-1]]]),
+			T.element([[1] + [2 * int(i) for i in str(bin(n // 2 - 1))[2:][::-1]]]) * T.element([[1, 0, 1]])
+		], [2 * alpha(n // 2), 2 * alpha(n // 2 - 1) + 1]
+	if n % 2 == 1:
+		return [
+			T.element([[1] + [2 * int(i) for i in str(bin(n // 2))[2:][::-1]]]) * T.element([[1, 1]]),
+			T.element([[1] + [2 * int(i) for i in str(bin(n // 2 - 1))[2:][::-1]]]) * T.element([[1, 1, 1]])
+		], [2 * alpha(n // 2) + 1, 2 * alpha(n // 2 - 1) + 2]
+
+
+def qnrIsQ1Iso(n, r):
+	f = lambda z : sumOfBasisElements(J[n], M[n], n, r, z)
+	Q1hb, deg = Q1homologyBasis(n)
+	deg = [d + 2 for d in deg]
+	Q1hb2, deg2 = Q1homologyBasis(n + r)
+	if min(deg) != min(deg2) or max(deg) != max(deg2): return False
+
+	basis = [M[n].tensor(J[n].elementFromT(b), F2t.basisElement(2, 0)) for b in Q1hb] # basis of H(J(n) ⊗ (t); Q1)
+	imageOfBasis = [J[n+r].mapIntoJ(f, basis[i], deg[i]) for i in range(2)]
+	zero = J[n+r].element([])
+	return imageOfBasis[0] != zero and imageOfBasis[1] != zero and imageOfBasis[0] != imageOfBasis[1]
+
+
+N, R = 30, 30
+J = [BG.Brown_Gitler_module(i) for i in range(N + R + 1)]
+F2t = Polynomial_Ring_A_Module()
+M = [Steenrod.Graded_A_tensor_product(J[n], F2t) for n in range(N + 1)]
+T = BG.Brown_Gitler_polynomial_algebra()
+
+for n in range(2, N + 1):
+	for r in range(R + 1):
+		if r % 2 == 1: continue
+		if qnrIsQ1Iso(n, r): print("q({}, {}))_* is an isomorphism".format(n, r))
