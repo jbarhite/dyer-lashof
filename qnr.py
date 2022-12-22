@@ -76,11 +76,21 @@ def qnrIsQ1Iso(n, r):
 	return imageOfBasis[0] != zero and imageOfBasis[1] != zero and imageOfBasis[0] != imageOfBasis[1]
 
 
+def degOfJnQ1Homology(n):
+	if n <= 1: return (1,)
+	return (2 * alpha(n // 2) + (n % 2), 2 * alpha(n // 2) + 1 + (n % 2))
+
+
 N, R = 30, 30
 J = [BG.Brown_Gitler_module(i) for i in range(N + R + 1)]
 F2t = Polynomial_Ring_A_Module()
 M = [Steenrod.Graded_A_tensor_product(J[n], F2t) for n in range(N + 1)]
 T = BG.Brown_Gitler_polynomial_algebra()
+
+
+for n in range(20):
+	print(n, degOfJnQ1Homology(n))
+exit()
 
 for n in range(2, N + 1):
 	for r in range(R + 1):
