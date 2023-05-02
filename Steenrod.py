@@ -50,6 +50,18 @@ class Steenrod_algebra: # at the prime 2
 		removeZeros = lambda X : [x for x in X if x != 0]
 		return [removeZeros([i + j - k, k]) for k in range(i // 2 + 1) if combMod2(j - k - 1, i - 2*k) == 1]
 
+	def basis(self, m):
+		return [self.adem([p]) for p in reversed(sorted(self.parts(m, m)))]
+
+	def parts(self, total, maxFirst):
+		if 2 * maxFirst < total: return []
+	
+		ans = []
+		for i in range((total + 1) // 2 - 1, min(maxFirst + 1, total + 1)):
+			if i == total: ans.append([i])
+			else: ans += [[i] + part for part in self.parts(total - i, i // 2)]
+		return ans
+
 	def degree(self, a):
 		return [sum(term) for term in a.data]
 
