@@ -76,13 +76,25 @@ def qnrIsQ1Iso(n, r):
 	return imageOfBasis[0] != zero and imageOfBasis[1] != zero and imageOfBasis[0] != imageOfBasis[1]
 
 
-N, R = 30, 30
+N, R = 50, 50
 J = [BG.Brown_Gitler_module(i) for i in range(N + R + 1)]
 F2t = Polynomial_Ring_A_Module()
 M = [Steenrod.Graded_A_tensor_product(J[n], F2t) for n in range(N + 1)]
 T = BG.Brown_Gitler_polynomial_algebra()
+A = Steenrod.Steenrod_algebra(2)
 
-for n in range(2, N + 1):
-	for r in range(R + 1):
-		if r % 2 == 1: continue
-		if qnrIsQ1Iso(n, r): print("q({}, {}))_* is an isomorphism".format(n, r))
+
+a, b, c = 1, 2, 3
+m = 3 + 2 * (a - 1)
+# print(2**a + 2**b - m)
+# thetas = [A.adem([I]) for I in [[7], [6, 1], [5, 2], [4, 2, 1]]]
+thetas = [A.adem([I]) for I in [[3], [2, 1]]]
+
+for x in T.basis(2**a + 2**b, m):
+	for theta in thetas:
+		print("({}) * ({}) = {}".format(theta, x, theta*x))
+	print()
+
+x = T.element([[1, 0, 1] + [0,]*(c - 3) + [2,]]) * T.element([[1,] + [2 for i in range(a-1)]])
+for theta in thetas:
+	print("({}) * ({}) = {}".format(theta, x, theta*x))
