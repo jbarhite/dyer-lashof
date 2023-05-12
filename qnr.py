@@ -63,7 +63,7 @@ def Q1homologyBasis(n):
 		], [2 * alpha(n // 2) + 1, 2 * alpha(n // 2 - 1) + 2]
 
 
-def qnrIsQ1Iso(n, r):
+def qnrIsQ1Iso(n, r, verbose=False):
 	f = lambda z : sumOfBasisElements(J[n], M[n], n, r, z)
 	Q1hb, deg = Q1homologyBasis(n)
 	deg = [d + 2 for d in deg]
@@ -72,8 +72,21 @@ def qnrIsQ1Iso(n, r):
 
 	basis = [M[n].tensor(J[n].elementFromT(b), F2t.basisElement(2, 0)) for b in Q1hb] # basis of H(J(n) ⊗ (t); Q1)
 	imageOfBasis = [J[n+r].mapIntoJ(f, basis[i], deg[i]) for i in range(2)]
+	if verbose:
+		for i in range(2): print("{} ⊗ t^2 |--> {}".format(Q1hb[i], T.elementFromJ(imageOfBasis[i])))
 	zero = J[n+r].element([])
-	return imageOfBasis[0] != zero and imageOfBasis[1] != zero and imageOfBasis[0] != imageOfBasis[1]
+	return imageOfBasis[0] != zero and imageOfBasis[1] != zero
+
+
+def fnmIsQ1Iso(n, m):
+	f = lambda z : len(z.data) % 2
+	Q1hb, deg = Q1homologyBasis(n)
+	Q1hb2, deg2 = Q1homologyBasis(m)
+	if min(deg) != min(deg2) or max(deg) != max(deg2): return False
+
+	imageOfBasis = [J[m].mapIntoJ(f, Q1hb[i], deg[i]) for i in range(2)]
+	zero = J[m].element([])
+	return imageOfBasis[0] != zero and imageOfBasis[1] != zero
 
 
 N, R = 50, 50
@@ -84,17 +97,9 @@ T = BG.Brown_Gitler_polynomial_algebra()
 A = Steenrod.Steenrod_algebra(2)
 
 
-a, b, c = 1, 2, 3
-m = 3 + 2 * (a - 1)
-# print(2**a + 2**b - m)
-# thetas = [A.adem([I]) for I in [[7], [6, 1], [5, 2], [4, 2, 1]]]
-thetas = [A.adem([I]) for I in [[3], [2, 1]]]
-
-for x in T.basis(2**a + 2**b, m):
-	for theta in thetas:
-		print("({}) * ({}) = {}".format(theta, x, theta*x))
-	print()
-
-x = T.element([[1, 0, 1] + [0,]*(c - 3) + [2,]]) * T.element([[1,] + [2 for i in range(a-1)]])
-for theta in thetas:
-	print("({}) * ({}) = {}".format(theta, x, theta*x))
+for a in range(1, 101, 2):
+	for c in range(1, a, 2):
+		if alpha(a) != alpha(c): continue
+		for j in range(1, 2):
+			n, m = 2**j * a, 2**j * c
+			print("j = {}, a = {} ({}), c = {} ({}), f({}, {}): {}".format(j, a, str(bin(a))[2:], c, str(bin(c))[2:], n, m, fnmIsQ1Iso(n, m)))
