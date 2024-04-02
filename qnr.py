@@ -48,6 +48,11 @@ def sumOfBasisElements(J, M, n, r, z):
 
 def alpha(n): return sum([int(i) for i in str(bin(n))[2:]])
 
+def nu2(n):
+	if n == 0: return 0
+	if n % 2 == 1: return 0
+	return 1 + nu2(n // 2)
+
 
 def Q1homologyBasis(n):
 	if n < 2: raise ValueError("Q1homologyBasis currently only accepts n >= 2")
@@ -95,11 +100,3 @@ F2t = Polynomial_Ring_A_Module()
 M = [Steenrod.Graded_A_tensor_product(J[n], F2t) for n in range(N + 1)]
 T = BG.Brown_Gitler_polynomial_algebra()
 A = Steenrod.Steenrod_algebra(2)
-
-
-for a in range(1, 101, 2):
-	for c in range(1, a, 2):
-		if alpha(a) != alpha(c): continue
-		for j in range(1, 2):
-			n, m = 2**j * a, 2**j * c
-			print("j = {}, a = {} ({}), c = {} ({}), f({}, {}): {}".format(j, a, str(bin(a))[2:], c, str(bin(c))[2:], n, m, fnmIsQ1Iso(n, m)))
