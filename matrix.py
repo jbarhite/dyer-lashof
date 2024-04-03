@@ -31,6 +31,58 @@ class Matrix:
 		return Matrix([[A[r][n + c] for c in range(n)] for r in range(n)], mod=2)
 
 
+	def row_reduce_mod2(self):
+		m, n = self.m, self.n
+
+		# first make sure that every entry is reduced mod 2
+		for r in range(m):
+			for c in range(n):
+				self.ent[r][c] = self.ent[r][c] % 2
+
+		pivotRow = 0 # this is the row in which we are currently trying to produce a pivot
+		pivotCols = []
+		for c in range(self.n):
+			for r in range(pivotRow, self.m):
+				# find the first nonzero entry below (or in) the pivot position
+				# if none of these entries are nonzero, then nothing needs to be done to this column
+				if self.ent[r][c] != 0:
+					# swap rows to bring a nonzero entry (i.e. 1) into the pivot position
+					self.swapRows(pivotRow, r)
+
+					# clear entries below the pivot
+					for r2 in range(pivotRow + 1, self.m):
+						if self.ent[r2][c] != 0:
+							self.addMultOfRow(r2, pivotRow, 1, mod2=True)
+					
+					pivotRow += 1
+					pivotCols.append(c)
+					break
+
+		# the matrix is now in row echelon form
+
+		for r in reversed(range(len(pivotCols))):
+			for r2 in range(r):
+				if self.ent[r2][pivotCols[r]] != 0:
+					self.addMultOfRow(r2, r, 1, mod2=True)
+
+		# the matrix is now in reduced row echelon form
+
+
+	# replaces row r1 with row r1 + k times row r2
+	def addMultOfRow(self, r1, r2, k, mod2=False):
+		for c in range(self.n):
+			newEntry = self.ent[r1][c] + k * self.ent[r2][c]
+			if mod2: newEntry = newEntry % 2
+			self.ent[r1][c] = newEntry
+
+
+	def swapRows(self, r1, r2):
+		temp = [self.ent[r1][c] for c in range(self.n)]
+		for c in range(self.n):
+			self.ent[r1][c] = self.ent[r2][c]
+			self.ent[r2][c] = temp[c]
+
+
 	def transpose(self):
 		return Matrix([[self.ent[c][r] for c in range(self.m)] for r in range(self.n)], self.mod)
 
