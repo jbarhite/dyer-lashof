@@ -100,8 +100,3 @@ F2t = Polynomial_Ring_A_Module()
 M = [Steenrod.Graded_A_tensor_product(J[n], F2t) for n in range(N + 1)]
 T = BG.Brown_Gitler_polynomial_algebra()
 A = Steenrod.Steenrod_algebra(2)
-
-
-
-
-print(N)
