@@ -68,6 +68,11 @@ class Matrix:
 		# the matrix is now in reduced row echelon form
 
 
+	# WARNING: this method assumes that the matrix is already in row echelon form
+	def rank(self):
+		return max(r for r in range(self.m) if any(self.ent[r][c] != 0 for c in range(self.n))) + 1
+
+
 	# replaces row r1 with row r1 + k times row r2
 	def addMultOfRow(self, r1, r2, k, mod2=False):
 		for c in range(self.n):
