@@ -94,6 +94,16 @@ def fnmIsQ1Iso(n, m):
 	return imageOfBasis[0] != zero and imageOfBasis[1] != zero
 
 
+# currently only defined for alpha(a) = alpha(c) = 2
+def g(j, a, c):
+	if not (j >= 1 and a % 2 == 1 and c % 2 == 1 and alpha(a) == 2 and alpha(c) == 2): return
+
+	e2, f2 = len(str(bin(a))) - 3, len(str(bin(c))) - 3
+	x = T.element([[1, 2**j]]) * T.element([[1] + [0] * (e2 - f2) + [2**(f2 + j)]])
+	return (lambda z : x in z.data)
+
+
+
 N, R = 50, 50
 J = [BG.Brown_Gitler_module(i) for i in range(N + R + 1)]
 F2t = Polynomial_Ring_A_Module()
