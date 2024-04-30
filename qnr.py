@@ -1,5 +1,6 @@
 import Steenrod
 import Brown_Gitler as BG
+from matrix import *
 
 
 class Polynomial_Ring_A_Module(Steenrod.Graded_A_module):
@@ -100,8 +101,22 @@ def g(j, a, c):
 
 	e2, f2 = len(str(bin(a))) - 3, len(str(bin(c))) - 3
 	x = T.element([[1, 2**j]]) * T.element([[1] + [0] * (e2 - f2) + [2**(f2 + j)]])
-	return (lambda z : x in z.data)
+	return (lambda z : 1 if x.data[0] in z.data else 0)
 
+
+def JnToJmSurjective(f, n, m):
+	for k in range(alpha(m), m + 1):
+		gmatrix = []
+		for b in T.basis(n, k):
+			fb = T.elementFromJ(J[m].mapIntoJ(f, b, k))
+			gmatrix.append([(1 if b2.data[0] in fb.data else 0) for b2 in T.basis(m, k)])
+		gmatrix = Matrix(gmatrix)
+		gmatrix.row_reduce_mod2()
+		if gmatrix.rank() < len(T.basis(m, k)):
+			print(k)
+			return False
+
+	return True
 
 
 N, R = 50, 50
